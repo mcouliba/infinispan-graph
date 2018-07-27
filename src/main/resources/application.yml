@@ -1,6 +1,3 @@
 spring:
   application:
     name: infinispan-graph
-
-server:
-  port: 8090

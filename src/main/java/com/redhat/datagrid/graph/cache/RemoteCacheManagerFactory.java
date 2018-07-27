@@ -2,11 +2,13 @@ package com.redhat.datagrid.graph.cache;
 
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
+import org.infinispan.client.hotrod.configuration.ServerConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayList;
@@ -20,22 +22,18 @@ import java.util.Set;
 public class RemoteCacheManagerFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoteCacheManagerFactory.class);
 
-    @Value("${infinispan.server.host:localhost}")
-    private String server_host = "localhost";
-
-    @Value("${infinispan.server.hotrod.port:11222}")
-    private int server_hotrod_port = 11222;
+    @Value("${infinispan.list_servers:localhost:11222}")
+    private String list_servers; // host1[:port][;host2[:port]]
 
     private RemoteCacheManager rcm;
-
-    public RemoteCacheManagerFactory() {
-
+    
+    @PostConstruct
+    void init(){
         // HotRod ConfigurationBuilder.
         ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
 
         // Make sure to register the ProtoStreamMarshaller.
-        configurationBuilder.addServer()
-                .host(server_host).port(server_hotrod_port);
+        configurationBuilder.addServers(this.list_servers);
 
         rcm = new RemoteCacheManager(configurationBuilder.build());
     }
