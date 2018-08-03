@@ -1,11 +1,19 @@
 <div class="container-fluid container-cards-pf">
     <div class="row row-cards-pf">
+        <div class="col-md-12">
+            <div class="card-pf">
+                <div class="card-pf-body">
+                    <select ng-model="vm.selectedCache" ng-options="cache.name for cache in vm.cacheInfo track by cache.name" ng-change="vm.update()">
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row row-cards-pf">
         <div class="col-md-12" >
             <div class="card-pf card-pf-view ">
                 <div class="card-pf-body">
-                    <select ng-model="vm.selectedCache" ng-options="cache.name for cache in vm.cacheInfo" ng-change="vm.update()"></select>
-                </div>
-                <div class="card-pf-body">
+                    <h1 class="card-pf-title">{{vm.selectedCache.name}}</h1>
                     <graph></graph>
                 </div>
             </div>

@@ -8,15 +8,12 @@ import com.redhat.datagrid.graph.model.NodeInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  * Created by mcouliba on 23/07/2018.
@@ -87,6 +84,27 @@ public class ClusterInfoService {
             cacheInfos = mbeanServer.getCacheInfo();
         }
 
+        return cacheInfos;
+    }
+
+    public List<NodeInfo> getDemoNodeInfo() throws Exception {
+        List<NodeInfo> nodeInfos = new ArrayList<NodeInfo>();
+        int nodeNumber = new Random().nextInt(5) + 1;
+
+        IntStream.rangeClosed(1, nodeNumber).forEach(i -> {
+            int entryNumber = new Random().nextInt(10);
+            NodeInfo newNodeInfo = new NodeInfo("DemoNode_" + i, null, entryNumber);
+            nodeInfos.add(newNodeInfo);
+        });
+
+        return nodeInfos;
+    }
+
+    public List<CacheInfo> getDemoCacheInfo() throws Exception {
+        List<CacheInfo> cacheInfos = new ArrayList<CacheInfo>();
+
+        CacheInfo newCacheInfo = new CacheInfo("Demo", "Demo");
+        cacheInfos.add(newCacheInfo);
         return cacheInfos;
     }
 }

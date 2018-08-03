@@ -1,0 +1,40 @@
+= Infinispan Graph
+
+Infinispan Graph is a graphical visualizer of a Infinispan (Red Hat Data Grid) clusters.
+
+**Key Features:**
+
+* Nodes of the clusters
+* Number of entries per nodes for a specific cache
+
+== Building
+
+* install JDK 1.8 or higher
+* install maven 3.3+ - http://maven.apache.org/download.html
+* install node,npm 6.11+,3.10+ - https://nodejs.org/en/download
+
+Enter the following:
+
+[source,xml]
+----
+$ git clone https://github.com/mcouliba/infinispan-graph.git
+$ cd infinispan-graph
+$ npm install --prefix src/main/resources/static
+$ mvn clean package -s settings.xml
+----
+       
+==  Running
+
+=== Demo Mode
+
+[source,xml]
+----
+$ mvn spring-boot:run -Dinfinispan.graph.demo=true -Dserver.port=8080
+----
+
+=== Standard Mode
+
+[source,xml]
+----
+$ mvn spring-boot:run -Dinfinispan.list_servers="localhost:11222;localhost:11322;localhost:11422" -Dserver.port=8080
+----

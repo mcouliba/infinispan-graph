@@ -1,37 +1,61 @@
 <!doctype html>
 <html lang="en" data-ng-app="app">
-<head>
-    <meta charset="utf-8"/>
-    <meta name="description" content=""/>
-    <meta name="viewport" content="width=device-width"/>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="description" content=""/>
+        <meta name="viewport" content="width=device-width"/>
 
-    <title>Infinispan Graph</title>
+        <title>Infinispan Graph</title>
 
-    <!-- Angular Components -->
-    <script src="node_modules/angular/angular.js"></script>
-    <script src="node_modules/angular-route/angular-route.js"></script>
+        <!-- CSS -->
 
-    <!-- Underscore -->
-    <script src="node_modules/underscore/underscore-min.js"></script>
+        <link rel="stylesheet" href="css/style.css" />
 
-    <!-- d3js -->
-    <script src="node_modules/d3/dist/d3.min.js"></script>
-    <script src="node_modules/d3-force/build/d3-force.min.js"></script>
-    <script src="node_modules/d3-quadtree/build/d3-quadtree.min.js"></script>
-    <script src="node_modules/d3-force-cluster/dist/d3-force-cluster.min.js"></script>
+        <!-- JQuery Components -->
+        <script src="node_modules/jquery/dist/jquery.js"></script>
 
-    <!-- Main JS -->
-    <script src="app.js"></script>
+        <!-- Bootstrap Components -->
+        <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="node_modules/bootstrap-select/dist/css/bootstrap-select.css" />
+        <script src="node_modules/bootstrap-select/dist/js/bootstrap-select.js"></script>
 
-    <!-- Controllers -->
-    <script src="controllers/graph-controller.js"></script>
+        <!-- Underscore -->
+        <script src="node_modules/underscore/underscore-min.js"></script>
 
-    <!-- Services -->
-    <script src="services/nodeinfo-service.js"></script>
-    <script src="services/cacheinfo-service.js"></script>
+        <!-- d3js -->
+        <script src="node_modules/d3/dist/d3.js"></script>
+        <script src="node_modules/d3-force/build/d3-force.js"></script>
+        <script src="node_modules/d3-quadtree/build/d3-quadtree.js"></script>
 
-</head>
-<body class="cards-pf">
-<div ng-view></div>
-</body>
+        <!-- PatternFly Components -->
+        <link rel="stylesheet" href="node_modules/patternfly/dist/css/patternfly.css" />
+        <link rel="stylesheet" href="node_modules/patternfly/dist/css/patternfly-additions.css" />
+        <script src="node_modules/patternfly/dist/js/patternfly.js"></script>
+
+        <!-- Angular Components -->
+        <script src="node_modules/angular/angular.js"></script>
+        <script src="node_modules/angular-route/angular-route.js"></script>
+        <script src="node_modules/angular-sanitize/angular-sanitize.js"></script>
+        <script src="node_modules/angular-patternfly/dist/angular-patternfly.js"></script>
+
+
+        <!-- Main JS -->
+        <script src="app.js"></script>
+
+        <!-- Directives -->
+        <script src="directives/header-directive.js"></script>
+
+        <!-- Controllers -->
+        <script src="controllers/graph-controller.js"></script>
+        <script src="controllers/header-controller.js"></script>
+
+        <!-- Services -->
+        <script src="services/nodeinfo-service.js"></script>
+        <script src="services/cacheinfo-service.js"></script>
+
+    </head>
+    <body class="cards-pf">
+        <div header></div>
+        <div ng-view></div>
+    </body>
 </html>

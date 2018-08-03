@@ -1,17 +1,16 @@
 {
-  "name": "web-app",
+  "name": "infinispan-graph",
   "version": "1.0.0",
   "description": "",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "angular": "^1.7.2",
+    "angular-patternfly": "^4.18.4",
     "angular-route": "^1.7.2",
     "d3": "^5.5.0",
     "d3-force": "^1.1.0",
+    "patternfly": "^3.54.1",
     "underscore": "^1.9.1"
   }
 }

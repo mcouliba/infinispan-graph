@@ -22,30 +22,33 @@ import java.util.Set;
 public class RemoteCacheManagerFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoteCacheManagerFactory.class);
 
-    @Value("${infinispan.list_servers:localhost:11222}")
+    @Value("${infinispan.list_servers:demo}")
     private String list_servers; // host1[:port][;host2[:port]]
 
     private RemoteCacheManager rcm;
-    
+
     @PostConstruct
     void init(){
-        // HotRod ConfigurationBuilder.
-        ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+        if (!"demo".equals(this.list_servers)) {
+            // HotRod ConfigurationBuilder.
+            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
 
-        // Make sure to register the ProtoStreamMarshaller.
-        configurationBuilder.addServers(this.list_servers);
-
-        rcm = new RemoteCacheManager(configurationBuilder.build());
+            configurationBuilder.addServers(this.list_servers);
+            rcm = new RemoteCacheManager(configurationBuilder.build());
+        }
     }
 
     public List<InetSocketAddress> getServer() {
         List<InetSocketAddress> servers = new ArrayList<InetSocketAddress>();
-        rcm.getCache().stats();
 
-        Set<SocketAddress> socketAddresses = rcm.getCache().getCacheTopologyInfo().getSegmentsPerServer().keySet();
+        if (rcm != null) {
+            rcm.getCache().stats();
 
-        for (SocketAddress socketAddress: socketAddresses){
-            servers.add((InetSocketAddress) socketAddress);
+            Set<SocketAddress> socketAddresses = rcm.getCache().getCacheTopologyInfo().getSegmentsPerServer().keySet();
+
+            for (SocketAddress socketAddress : socketAddresses) {
+                servers.add((InetSocketAddress) socketAddress);
+            }
         }
 
         return servers;

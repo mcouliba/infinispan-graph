@@ -5,26 +5,11 @@
         .module('app')
         .controller('GraphController', GraphController);
 
-  GraphController.$inject = ['NodeInfoService', 'CacheInfoService'];
+  GraphController.$inject = ['NodeInfoService', 'CacheInfoService', '$templateCache'];
 
-    function GraphController(NodeInfoService, CacheInfoService) {
+    function GraphController(NodeInfoService, CacheInfoService, $templateCache) {
         var vm = this;
-
-        vm.selectedCache = {
-            name: "default(dist_sync)",
-            container: "clustered"
-        }
-
-        // Getting cache name list
-        CacheInfoService.get()
-            .then(
-                function (response) {
-                    vm.cacheInfo = response;
-                },
-                function (errResponse) {
-                    vm.cacheInfo = ["Error for retrieving the cache names"]
-                }
-            );
+        var refreshDelay = 5000;
 
         vm.update = () => {
             if (vm.selectedCache) {
@@ -32,7 +17,19 @@
             }
         }
 
-        Promise.all([collectNodeInfo()]).then(buildGraph);
+        // Getting cache name list
+        CacheInfoService.get()
+            .then(
+                function (response) {
+                    vm.cacheInfo = response;
+                    vm.selectedCache = vm.cacheInfo[0];
+                    console.log("collectCacheInfo");
+                    Promise.all([collectNodeInfo()]).then(buildGraph);
+                },
+                function (errResponse) {
+                    vm.cacheInfo = ["Error for retrieving the cache names"]
+                }
+            );
 
         function collectNodeInfo() {
           return new Promise((resolve, reject) => {
@@ -41,6 +38,7 @@
                     function (response) {
                         vm.nodeInfo = response;
                         resolve(response);
+                        console.log("collectNodeInfo")
                     },
                     function (errResponse) {
                         reject("ERROR");
@@ -66,7 +64,7 @@
                 .attr('width', width)
                 .style('background-color', 'AliceBlue');
 
-            var padding = 10, // separation between same-color circles
+            var padding = 1.5, // separation between same-color circles
                 clusterPadding = 20, // separation between different-color circles
                 maxRadius = 20,
                 entryRadius = 5,
@@ -86,14 +84,24 @@
             .attr("class", "tooltip")
             .style("opacity", 0);
 
-
+        var forceCollide = d3.forceCollide()
+            .radius(function(d) { return d.r + 1.5; })
+            .iterations(1);
 
         // create the clustering/collision force simulation
-        let simulation = d3.forceSimulation(nodes)
-            .force("collide", collide)
-            .force("cluster", clustering)
+        let simulation = d3.forceSimulation()
             .force('center', d3.forceCenter(width/2, height/2))
-            .on("tick", ticked);
+//            .velocityDecay(0.2)
+//            .force("x", d3.forceX().strength(.005))
+//            .force("y", d3.forceY().strength(.005))
+//            .force("gravity", d3.forceManyBody(30))
+            .force("collide", collide)
+//            .force('collide', d3.forceCollide(d => d.r + padding)
+//                .strength(0.7))
+            .force("cluster", clustering)
+//            .force('cluster', forceCluster)
+            .on("tick", ticked)
+            .nodes(nodes);
 
         var circle = svg.selectAll('g.circle')
             .data(nodes, function(d) { return d.id;})
@@ -152,7 +160,7 @@
 
         d3.interval(function() {
             Promise.all([collectNodeInfo()]).then(redraw);
-        }, 2000, d3.now());
+        }, refreshDelay, d3.now());
 
         function updateNodes() {
             var oldNodes = nodes;
@@ -169,8 +177,8 @@
                          node : d.name,
                          numberEntries : d.numberEntries,
                          r : nodeRadius,
-                         x :  Math.cos(i / vm.nodeInfo.length * 2 * Math.PI) * 150 + width / 2,
-                         y : Math.sin(i / vm.nodeInfo.length * 2 * Math.PI) * 150 + height / 2
+                         x :  Math.cos(i / vm.nodeInfo.length * 2 * Math.PI) * 150 + width / 2 + Math.random(),
+                         y : Math.sin(i / vm.nodeInfo.length * 2 * Math.PI) * 150 + height / 2 + Math.random()
                     };
                 } else {
                     // Update just the number of entries
@@ -226,7 +234,8 @@
             circle.exit().selectAll("image")
                         .transition(exitTransition)
                             .attr("y", (d) => d.y + 100)
-                            .attr("fill-opacity", 1e-6)
+                            .attr("height", 1e-6)
+                            .attr("width", 1e-6)
                     .remove();
 
             circle.exit()
@@ -284,7 +293,6 @@
 
           // Update and restart the simulation.
           simulation.nodes(nodes);
-//            .on("tick", ticked);
 
           simulation.alphaTarget(0.3).restart();
         }
@@ -293,6 +301,8 @@
         function ticked() {
             circle
                 .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+//                  .attr("cx", function(d) { return d.x; })
+//                  .attr("cy", function(d) { return d.y; });
         }
 
         // Drag functions used for interactivity
@@ -332,6 +342,18 @@
           });
         }
 
+        function forceCluster(alpha) {
+          var k = alpha * 1
+          nodes.forEach(function(d) {
+              var ispnNode = ispnNodes[d.node];
+              var k = alpha * 1
+              if (ispnNode === d) return;
+
+              d.vx -= (d.x - ispnNode.x) * k;
+              d.vy -= (d.y - ispnNode.y) * k;
+            });
+        }
+
         function collide(alpha) {
             var quadtree = d3.quadtree()
                 .x((d) => d.x)
@@ -350,7 +372,7 @@
                   var x = d.x - quad.data.x,
                       y = d.y - quad.data.y,
                       l = Math.sqrt(x * x + y * y),
-                      r = d.r + quad.data.r + (d.cluster === quad.data.cluster ? padding : clusterPadding);
+                      r = d.r + quad.data.r + (d.node === quad.data.node ? padding : clusterPadding);
                   if (l < r) {
                     l = (l - r) / l * alpha;
                     d.x -= x *= l;
