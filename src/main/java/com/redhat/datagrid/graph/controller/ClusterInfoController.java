@@ -21,15 +21,12 @@ public class ClusterInfoController {
     @Autowired
     private ClusterInfoService clusterInfoService;
 
-    @Value("${infinispan.graph.demo}")
-    private boolean isDemo;
-
     @RequestMapping(method=RequestMethod.GET, value = "/nodes")
     public List<NodeInfo> getNodeInfo(@RequestParam("cacheName") String cacheName
             , @RequestParam("containerName") String containerName) throws Exception {
         List<NodeInfo> response;
 
-        if (isDemo) {
+        if (clusterInfoService.isDemoMode()) {
             response = clusterInfoService.getDemoNodeInfo();
         } else {
             clusterInfoService.updateMBeanServers(); // TODO Create and internal thread to update Server lists
@@ -43,7 +40,7 @@ public class ClusterInfoController {
     public List<CacheInfo> getCacheInfo() throws Exception {
         List<CacheInfo> response;
 
-        if (isDemo) {
+        if (clusterInfoService.isDemoMode()) {
             response = clusterInfoService.getDemoCacheInfo();
         } else {
             clusterInfoService.updateMBeanServers(); // TODO Create and internal thread to update Server lists

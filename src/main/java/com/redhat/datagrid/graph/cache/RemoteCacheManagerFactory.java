@@ -22,19 +22,24 @@ import java.util.Set;
 public class RemoteCacheManagerFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoteCacheManagerFactory.class);
 
-    @Value("${infinispan.list_servers:demo}")
+    @Value("${infinispan.list_servers}")
     private String list_servers; // host1[:port][;host2[:port]]
+
+    private boolean demoMode = false;
 
     private RemoteCacheManager rcm;
 
     @PostConstruct
     void init(){
-        if (!"demo".equals(this.list_servers)) {
+        if ((this.list_servers != null) && !("".equals(this.list_servers))) {
             // HotRod ConfigurationBuilder.
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
 
             configurationBuilder.addServers(this.list_servers);
             rcm = new RemoteCacheManager(configurationBuilder.build());
+        } else {
+            LOGGER.info("--- DEMO MODE ENABLED ---");
+            demoMode = true;
         }
     }
 
@@ -52,5 +57,9 @@ public class RemoteCacheManagerFactory {
         }
 
         return servers;
+    }
+
+    public boolean isDemoMode (){
+        return this.demoMode;
     }
 }

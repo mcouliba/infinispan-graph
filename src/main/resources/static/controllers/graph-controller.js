@@ -95,7 +95,7 @@
 //            .force("x", d3.forceX().strength(.005))
 //            .force("y", d3.forceY().strength(.005))
 //            .force("gravity", d3.forceManyBody(30))
-            .force("collide", collide)
+//            .force("collide", collide)
 //            .force('collide', d3.forceCollide(d => d.r + padding)
 //                .strength(0.7))
             .force("cluster", clustering)
@@ -177,12 +177,14 @@
                          node : d.name,
                          numberEntries : d.numberEntries,
                          r : nodeRadius,
-                         x :  Math.cos(i / vm.nodeInfo.length * 2 * Math.PI) * 150 + width / 2 + Math.random(),
-                         y : Math.sin(i / vm.nodeInfo.length * 2 * Math.PI) * 150 + height / 2 + Math.random()
+                         x :  Math.cos(i / vm.nodeInfo.length * 2 * Math.PI) * 150 + width / 2,// + Math.random(),
+                         y : Math.sin(i / vm.nodeInfo.length * 2 * Math.PI) * 150 + height / 2 //+ Math.random()
                     };
                 } else {
                     // Update just the number of entries
                     mainEntry.numberEntries = d.numberEntries;
+                    mainEntry.x =  Math.cos(i / vm.nodeInfo.length * 2 * Math.PI) * 150 + width / 2;// + Math.random();
+                    mainEntry.y =  Math.sin(i / vm.nodeInfo.length * 2 * Math.PI) * 150 + height / 2;// + Math.random();
                 }
 
                 // add cluster id and radius to array
@@ -287,6 +289,10 @@
             circle.selectAll("text.numberEntries")
                 .transition(updateTransition)
                 .text(function(d) {return (d.type === "NODE") ? "[" + d.numberEntries + "]" : ""});
+
+//            circle.selectAll("circle")
+//                .transition(updateTransition)
+//                .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
             // Enter and update
             circle = circleEnter.merge(circle);

@@ -107,4 +107,8 @@ public class ClusterInfoService {
         cacheInfos.add(newCacheInfo);
         return cacheInfos;
     }
+
+    public boolean isDemoMode (){
+        return remoteCacheManagerFactory.isDemoMode();
+    }
 }

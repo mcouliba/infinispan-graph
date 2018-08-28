@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.infinispan.graph</groupId>
-    <artifactId>web-app</artifactId>
+    <groupId>org.infinispan</groupId>
+    <artifactId>infinispan-graph</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -24,6 +24,7 @@
         <fabric8.generator.from>registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift</fabric8.generator.from>
         <spring-boot.bom.version>1.5.8.Final-redhat-1</spring-boot.bom.version>
         <springboot.version>1.5.8.RELEASE</springboot.version>
+        <spring.k8s.bom.version>0.3.0.RELEASE</spring.k8s.bom.version>
     </properties>
 
     <dependencyManagement>
@@ -32,6 +33,13 @@
                 <groupId>me.snowdrop</groupId>
                 <artifactId>spring-boot-bom</artifactId>
                 <version>${spring-boot.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-kubernetes-dependencies</artifactId>
+                <version>${spring.k8s.bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -60,7 +68,6 @@
             <version>${springboot.version}</version>
         </dependency>
 
-
         <!--To support Java 8 Date format serialization-->
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -80,6 +87,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Spring Cloud Kubernetes -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-kubernetes-config</artifactId>
         </dependency>
 
         <!-- Tomcat -->

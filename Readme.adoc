@@ -29,7 +29,7 @@ $ mvn clean package -s settings.xml
 
 [source,xml]
 ----
-$ mvn spring-boot:run -Dinfinispan.graph.demo=true -Dserver.port=8080
+$ mvn spring-boot:run -Dserver.port=8080
 ----
 
 === Standard Mode
